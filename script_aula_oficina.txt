@@ -1,0 +1,209 @@
+-- criação do banco de dados para o cenário de Oficina Mecânica
+-- drop database oficina;
+create database oficina;
+use oficina;
+
+create table marca(
+		idMarca int primary key,
+        Nome varchar(80)
+);
+
+create table modelo(
+		idModelo int primary key,
+		idMarca int,
+        Nome varchar(100),
+		constraint foreign key (idMarca) references marca(idMarca)
+);
+
+-- criar tabela cliente
+create table cliente(
+		idCliente int auto_increment primary key,
+        Nome varchar(80),
+        Telefone varchar(30),
+        Email varchar(80)
+);
+
+create table veiculo(
+		idVeiculo int auto_increment primary key,
+        idCliente int,
+		idMarca int,
+		idModelo int,
+        Cor varchar(30),
+        Motor varchar(30),
+		Combustivel varchar(30),
+		Placa varchar(30),
+		Ano int,
+		constraint foreign key (idCliente) references cliente(idCliente),
+		constraint foreign key (idMarca) references marca(idMarca),
+		constraint foreign key (idModelo) references modelo(idModelo)
+);
+
+create table mecanico(
+		idMecanico int auto_increment primary key,
+        Codigo int,
+		Nome varchar(50),
+        Endereco varchar(100),
+		Especialidade varchar(30)
+);
+
+create table servico(
+	idServico int auto_increment primary key,
+	Nome varchar(50),
+);
+
+create table ois(
+	idOIS int auto_increment primary key,
+	NumeroOIS int,
+    idVeiculo int,
+	Tipo ENUM('REVISAO', 'MANUTENCAO'),
+	idMecanico int,
+	DataEmissao date,
+	DataEntrega date,
+	Valor float,
+	Status ENUM('Entregue', 'Em andamento', 'Cancelado'),
+	constraint foreign key (idVeiculo) references veiculo(idVeiculo),
+	constraint foreign key (idMecanico) references mecanico(idMecanico)
+);
+
+
+create table pecas(
+	idPeca  int auto_increment primary key,
+	Nome  varchar(80),
+);
+
+create table ois_peca(
+	idOisPeca  int auto_increment primary key,
+	idOIS int,
+	idPeca int,
+	Quantidade int,
+	Valor float,
+	constraint foreign key (idOIS) references ois(idOIS),
+	constraint foreign key (idPeca) references pecas(idPeca)
+);
+
+create table ois_servico(
+	idOisServico  int auto_increment primary key,
+	idOis  int,
+	idMecanico int,
+	idServico int,
+	Valor float,
+	constraint foreign key (idOIS) references ois(idOIS),
+	constraint foreign key (idMecanico) references mecanico(idMecanico),
+	constraint foreign key (idServico) references servico(idServico)
+);
+
+=======================================
+CARGA DE DADOS
+
+INSERT INTO cliente(Nome, Telefone, Email) VALUES ('Matheus', '2345678', 'matheus@teste.com.br');
+INSERT INTO cliente(Nome, Telefone, Email) VALUES ('Lucas', '1345678', 'lucas@teste.com.br');
+INSERT INTO cliente(Nome, Telefone, Email) VALUES ('Thiago', '2347678', 'thiago@teste.com.br');
+INSERT INTO cliente(Nome, Telefone, Email) VALUES ('João', '3476009', 'joao@teste.com.br');
+
+
+INSERT INTO mecanico(Codigo, Nome, Endereco, Especialidade) VALUES (1, 'Gabriel', 'Rua Teste 2', 'Motor');
+INSERT INTO mecanico(Codigo, Nome, Endereco, Especialidade) VALUES (2, 'Manoel', 'Rua Teste 4', 'Câmbio');
+INSERT INTO mecanico(Codigo, Nome, Endereco, Especialidade) VALUES (3, 'Raphael', 'Rua Teste 6', 'Elétrica');
+INSERT INTO mecanico(Codigo, Nome, Endereco, Especialidade) VALUES (4, 'Natanael', 'Rua Teste 8', 'Ar Condicionado');
+INSERT INTO mecanico(Codigo, Nome, Endereco, Especialidade) VALUES (5, 'Salomão', 'Rua Teste 18', 'Som');
+
+
+INSERT INTO veiculo (idCliente, idMarca, idModelo, Cor, Motor, Combustivel, Placa, Ano) VALUES (1, 13, 235, 'Verde', '2.0', 'Gasolina', 'XPT5678', 1992);
+INSERT INTO veiculo (idCliente, idMarca, idModelo, Cor, Motor, Combustivel, Placa, Ano) VALUES (2, 2, 710, 'Prata', '1.0', 'Alcool', 'ABC1235', 1994);
+
+
+INSERT INTO pecas(Nome) VALUES ('Eletrobomba Partida a Frio');
+INSERT INTO pecas(Nome) VALUES ('Eletrobomba Lavador do Para-Brisa');
+INSERT INTO pecas(Nome) VALUES ('Sensor ABS');
+INSERT INTO pecas(Nome) VALUES ('Filtro do Sensor MAP');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Posição do Câmbio');
+INSERT INTO pecas(Nome) VALUES ('Porca de Fixação do Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Velocidade (VSS)');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Velocidade do Tacógrafo');
+INSERT INTO pecas(Nome) VALUES ('Flange do Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Componentes do Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Nível de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Posição do Pedal Acelerador (APP)');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Posição do Pedal da Embreagem');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Posição do Pedal do Freio');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Detonação (KS)');
+INSERT INTO pecas(Nome) VALUES ('Válvula Solenoide de Partida a Frio');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Posição da Borboleta (TPS)');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Rotação (PMS-CKP)');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Fase (CMP)');
+INSERT INTO pecas(Nome) VALUES ('Sensor de Pressão Absoluta (MAP)');
+INSERT INTO pecas(Nome) VALUES ('Atuador da Marcha Lenta (IAC)');
+INSERT INTO pecas(Nome) VALUES ('Tubo Corrugado da Bomba e Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Diafragma Monoponto');
+INSERT INTO pecas(Nome) VALUES ('Guarnição da Flange do Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Pré Filtro da Bomba e Módulo de Combustível');
+INSERT INTO pecas(Nome) VALUES ('Kit de Filtros para Bico Injetor');
+INSERT INTO pecas(Nome) VALUES ('Amortecedor de Pressão');
+INSERT INTO pecas(Nome) VALUES ('Regulador de Pressão');
+
+INSERT INTO servico(Nome) VALUES ('Troca de óleo');
+INSERT INTO servico(Nome) VALUES ('Alinhamento e balanceamento');
+INSERT INTO servico(Nome) VALUES ('Revisão e manutenção preventiva');
+INSERT INTO servico(Nome) VALUES ('Reparo de freios');
+INSERT INTO servico(Nome) VALUES ('Emgreagem');
+INSERT INTO servico(Nome) VALUES ('Troca de filtros');
+INSERT INTO servico(Nome) VALUES ('Serviço de climatização');
+INSERT INTO servico(Nome) VALUES ('Cãmbio');
+INSERT INTO servico(Nome) VALUES ('Vidro Elétrico');
+INSERT INTO servico(Nome) VALUES ('Alarme');
+INSERT INTO servico(Nome) VALUES ('Som automotivo');
+
+
+INSERT INTO ois(NumeroOIS, idVeiculo, Tipo, idMecanico, DataEmissao, DataEntrega, Valor, Status) VALUES (1, 1, 'MANUTENCAO', 1, '2024-11-03', '2024-11-05', 1000, 'Entregue');
+INSERT INTO ois(NumeroOIS, idVeiculo, Tipo, idMecanico, DataEmissao, DataEntrega, Valor, Status) VALUES (2, 2, 'REVISAO', 2, '2025-11-03', NULL, 500, 'Em andamento');
+
+
+INSERT INTO ois_peca(idOIS,	idPeca,	Quantidade,	Valor) VALUES (1, 1, 1,	200);
+INSERT INTO ois_peca(idOIS,	idPeca,	Quantidade,	Valor) VALUES (1, 2, 1,	300);
+INSERT INTO ois_peca(idOIS,	idPeca,	Quantidade,	Valor) VALUES (2, 3, 1,	200);
+
+INSERT INTO ois_servico(idOis, idMecanico, idServico, Valor) VALUES (1, 1, 1, 500);
+INSERT INTO ois_servico(idOis, idMecanico, idServico, Valor) VALUES (2, 2, 2, 300);
+
+--------------------
+--- clientes sem veiculo
+select * from cliente where idCliente not in (select idCliente from veiculo)
+
+--- dados do veiculo
+SELECT * from veiculo as V INNER JOIN marca as M ON V.idMarca =M.idMarca
+INNER JOIN modelo MD on V.idModelo = MD.idModelo
+
+-------- total de servicos
+SELECT S.Nome, SUM(Valor) as total FROM ois_servico as O INNER JOIN servico as S
+ON O.idServico = S.idServico
+group by  S.Nome
+
+------ total por mecanico
+SELECT M.Nome, SUM(Valor) as total FROM ois_servico as O INNER JOIN mecanico as M
+ON O.idMecanico = M.idMecanico
+group by M.Nome
+
+---- mecanicos sem servico
+select * from mecanico where idMecanico not in (select idMecanico from ois_servico)
+
+--- servicos sem OIS
+select * from servico where idServico not in (select idServico from ois_servico)
+
+--- dados da OIS
+select * FROM ois AS O INNER JOIN veiculo as V
+ON O.idVeiculo = V.idVeiculo
+INNER JOIN cliente AS C
+ON V.idCliente = C.idCliente
+INNER JOIN marca as M ON V.idMarca =M.idMarca
+INNER JOIN modelo MD on V.idModelo = MD.idModelo
+
+--------------
+Marcas de veiculos com mais de 10 modelos
+select M.Nome, count(*) as total from marca as M INNER JOIN modelo as MO
+on M.idMarca = MO.idMarca
+GROUP BY  M.Nome
+HAVING COUNT(*) > 10
+order by COUNT(*) DESC
+
+
