@@ -4,4 +4,4 @@ Neste desafio foi criado um banco de dados relacional com base no modelo de dado
 
 O repositório tem o modelo relacional, o banco de dados e consultas executadas sobre esta base.
 
-![DIO](modelo_ecommerce.jpg)
+![DIO](modelo_oficina.jpg)
